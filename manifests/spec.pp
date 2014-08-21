@@ -21,5 +21,13 @@ define softec_sudo::spec(
       comment   => $comment,
       target    => $target
     }
+
+    if !defined(File[$target]) {
+      file{$target :
+        mode  => '0440',
+        require => Sudo::Spec[$name]
+      }
+    }
+
   }
 }

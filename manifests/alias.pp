@@ -15,5 +15,12 @@ define softec_sudo::alias (
       comment     => $comment,
       target      => $target
     }
+
+    if $target != '/etc/sudoers' {
+      file{$target :
+        mode  => '0440',
+        require => Sudo::Alias[$name]
+      }
+    }
   }
 }

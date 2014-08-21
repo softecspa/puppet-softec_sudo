@@ -20,6 +20,8 @@ define softec_sudo::alias (
       if !defined(File[$target]) {
         file{$target :
           mode  => '0440',
+          owner => 'root',
+          group => 'root',
           require => Sudo::Alias[$name]
         }
       }

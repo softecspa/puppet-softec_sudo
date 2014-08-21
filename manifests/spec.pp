@@ -25,6 +25,8 @@ define softec_sudo::spec(
     if !defined(File[$target]) {
       file{$target :
         mode  => '0440',
+        owner => 'root',
+        group => 'root',
         require => Sudo::Spec[$name]
       }
     }

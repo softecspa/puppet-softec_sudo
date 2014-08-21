@@ -1,0 +1,17 @@
+###
+# /etc/sudoers
+# GENERATED WITH PUPPET using /modules/softec_sudo/files/sudoers_default.erb
+
+###
+# Variables
+Defaults        env_reset
+
+###
+# Members of the admin group may gain root privileges
+%admin  ALL = NOPASSWD: ALL, !/bin/su, !/usr/bin/ssh
+
+###
+# User and group privilege specification
+root            ALL=(ALL) ALL
+
+includedir /etc/sudoers.d

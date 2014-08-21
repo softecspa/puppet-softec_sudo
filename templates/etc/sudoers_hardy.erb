@@ -1,0 +1,98 @@
+###
+# /etc/sudoers
+# GENERATED WITH PUPPET using /modules/sudoers/files/sudoers
+
+###
+# Variables
+Defaults        env_reset
+
+###
+# Host alias specification
+Host_Alias      DEV         = popolo01, popolo02
+Host_Alias      MENARINI    = menarini01, menarini02
+Host_Alias      GEMINI      = gemini01, gemini02
+Host_Alias      TITOLO      = titolo
+Host_Alias      BACKUPPC    = <%= clientcert %>
+
+####
+# User alias specification
+# empty
+
+###
+# Cmnd alias specification
+Cmnd_Alias      WSDL                        =   /usr/local/bin/clear-cache-wsdl
+Cmnd_Alias      WORKON                      =   /root/scripts/ispconfig/workon.sh, \
+                                                /usr/bin/scp /etc/group*, \
+                                                /usr/local/bin/group-wrapper.sh
+Cmnd_Alias      DEFAULTPERMS                =   /root/scripts/ispconfig/defaultperms.sh, \
+                                                /usr/bin/find /var/www/web*, \
+                                                /usr/bin/find /var/lib/tomcat6/webapps/web*, \
+                                                /usr/bin/find /var/lib/tomcat5.5/webapps/web*, \
+                                                /usr/bin/find /var/lib/tomcat7/webapps/web*, \
+                                                /usr/bin/find /mnt/tomcat_webapps/webapps/web*
+Cmnd_Alias      DEPLOY                      =   /etc/init.d/tomcat5.5 restart, \
+                                                /etc/init.d/tomcat_safe restart, \
+                                                /etc/init.d/tomcat6_safe restart, \
+                                                /usr/local/bin/manage-balancer-weight, \
+                                                /usr/local/bin/ispconfig-get-resellers-mail.php
+Cmnd_Alias      TOMCAT_CLEAN                =   /bin/rm -rf /var/cache/tomcat5.5/*, /bin/rm -rf /etc/tomcat5.5/Catalina/*
+Cmnd_Alias      MONITOR                     =   /root/scripts/cluster/cluster-monitor.sh
+Cmnd_Alias      TOMCAT                      =   /etc/init.d/tomcat_safe
+Cmnd_Alias      TOMCAT6_INITSCRIPT          =   /etc/init.d/tomcat6_safe
+Cmnd_Alias      TOMCAT6_INITSCRIPT_10_04    =   /etc/init.d/tomcat6
+Cmnd_Alias      GLUSTERFS                   =   /usr/lib/nagios/plugins/contrib/check_glusterfs_vol.sh
+Cmnd_Alias      VMC                         =   /bin/su -s /bin/bash - web58_vmc
+Cmnd_Alias      NEWSCAST_BIN                =   /var/www/newscast/bin/dictionary.sh, \
+                                                /var/www/newscast/bin/newscast_on_test.sh, \
+                                                /var/www/newscast/bin/newscast_reset.sh, \
+                                                /var/www/newscast/bin/newscast_restart.sh, \
+                                                /var/www/newscast/bin/newscast_start.sh, \
+                                                /var/www/newscast/bin/newscast_stop.sh, \
+                                                /var/www/newscast/bin/script_dictionary.sh, \
+                                                /var/www/newscast/bin/script_rmsites.sh, \
+                                                /var/www/newscast/bin/script_sites.sh, \
+                                                /var/www/newscast/bin/start.sh
+Cmnd_Alias      CMD_TAR_CREATE_BACKUPPC     =   /usr/bin/nice -n19 /usr/bin/ionice -c2 -n7 /bin/tar -c *
+Cmnd_Alias      CMD_TAR_RESTORE_BACKUPPC    =   /usr/bin/nice -n19 /usr/bin/ionice -c2 -n7 /bin/tar -x *
+Cmnd_Alias      CMD_RSYNC_BACKUPPC          =   /usr/bin/nice -n19 /usr/bin/ionice -c2 -n7 /usr/bin/rsync
+Cmnd_Alias      TAR_CREATE_BACKUPPC         =   /bin/tar -c *
+Cmnd_Alias      TAR_RESTORE_BACKUPPC        =   /bin/tar -x *
+Cmnd_Alias      ISPCONFIG_REWRITE_CONF      =   /usr/bin/touch /home/admispconfig/ispconfig/.run
+Cmnd_Alias      LSOF_JAVA                   =   /usr/bin/lsof -c jsvc -c java
+Cmnd_Alias      NAGIOS_CHECK_NFS4           =   /usr/lib/nagios/plugins/contrib/check_nfs4.pl
+Cmnd_Alias      HPING3                      =   /usr/sbin/hping3
+Cmnd_Alias      NAGIOS_CHECK_BACKUPPC       =   /usr/lib/nagios/plugins/check_backuppc
+Cmnd_Alias      NAGIOS_CHECK_HAPROXY        =   /usr/lib/nagios/plugins/contrib/check_haproxy_stats.pl
+Cmnd_Alias      NAGIOS_CHECK_VARNISH        =   /usr/sbin/varnishd
+
+###
+# Members of the admin group may gain root privileges
+%admin  ALL = NOPASSWD: ALL, !/bin/su, !/usr/bin/ssh
+
+###
+# User and group privilege specification
+root            ALL=(ALL) ALL
+nagios          ALL=(ALL) NOPASSWD:LSOF_JAVA, NAGIOS_CHECK_NFS4, HPING3, NAGIOS_CHECK_HAPROXY, NAGIOS_CHECK_VARNISH
+nagios          ALL=(backuppc) NOPASSWD:NAGIOS_CHECK_BACKUPPC
+%nagios         GEMINI = NOPASSWD:GLUSTERFS
+backuppc        BACKUPPC=(root) NOPASSWD:CMD_TAR_CREATE_BACKUPPC, CMD_TAR_RESTORE_BACKUPPC, CMD_RSYNC_BACKUPPC, TAR_CREATE_BACKUPPC, TAR_RESTORE_BACKUPPC
+softecbackuppc  BACKUPPC=(root) NOPASSWD:CMD_TAR_CREATE_BACKUPPC, CMD_TAR_RESTORE_BACKUPPC, CMD_RSYNC_BACKUPPC, TAR_CREATE_BACKUPPC, TAR_RESTORE_BACKUPPC
+backup          ALL=(root) NOPASSWD: /usr/bin/rsync, /bin/tar
+vpuggelli       ALL=(ALL) VMC
+%powerusers     ALL= NOPASSWD: DEPLOY
+%powerusers     ALL= NOPASSWD: MONITOR
+%powerusers     ALL= NOPASSWD: TOMCAT
+%powerusers     ALL= (tomcat55) NOPASSWD: TOMCAT_CLEAN
+%users          ALL= NOPASSWD: WORKON
+%users          ALL= NOPASSWD: DEFAULTPERMS
+%users          ALL = NOPASSWD: DEPLOY, WORKON, DEFAULTPERMS, MONITOR
+%users          DEV = (tomcat55) NOPASSWD: TOMCAT_CLEAN
+#%users          OLIVIERO_FE = NOPASSWD: APACHE2
+%super          MENARINI = NOPASSWD: WORKON, DEFAULTPERMS
+%super          ALL = NOPASSWD: DEPLOY, WORKON, DEFAULTPERMS, MONITOR, ISPCONFIG_REWRITE_CONF, WSDL
+%super          TITOLO = NOPASSWD: NEWSCAST_BIN
+%tomcat55       ALL = NOPASSWD: TOMCAT, MONITOR
+%tomcat6        ALL = NOPASSWD: TOMCAT6_INITSCRIPT, TOMCAT6_INITSCRIPT_10_04
+
+#includedir /etc/sudoers.d
+

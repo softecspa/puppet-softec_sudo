@@ -20,12 +20,6 @@ Host_Alias      TITOLO      = titolo
 ###
 # Cmnd alias specification
 Cmnd_Alias      WSDL                        =   /usr/local/bin/clear-cache-wsdl
-Cmnd_Alias      DEFAULTPERMS                =   /root/scripts/ispconfig/defaultperms.sh, \
-                                                /usr/bin/find /var/www/web*, \
-                                                /usr/bin/find /var/lib/tomcat6/webapps/web*, \
-                                                /usr/bin/find /var/lib/tomcat5.5/webapps/web*, \
-                                                /usr/bin/find /var/lib/tomcat7/webapps/web*, \
-                                                /usr/bin/find /mnt/tomcat_webapps/webapps/web*
 Cmnd_Alias      DEPLOY                      =   /etc/init.d/tomcat5.5 restart, \
                                                 /etc/init.d/tomcat_safe restart, \
                                                 /etc/init.d/tomcat6_safe restart, \
@@ -72,12 +66,10 @@ vpuggelli       ALL=(ALL) VMC
 %powerusers     ALL= NOPASSWD: MONITOR
 %powerusers     ALL= NOPASSWD: TOMCAT
 %powerusers     ALL= (tomcat55) NOPASSWD: TOMCAT_CLEAN
-%users          ALL= NOPASSWD: DEFAULTPERMS
-%users          ALL = NOPASSWD: DEPLOY, DEFAULTPERMS, MONITOR
+%users          ALL = NOPASSWD: DEPLOY, MONITOR
 %users          DEV = (tomcat55) NOPASSWD: TOMCAT_CLEAN
 #%users          OLIVIERO_FE = NOPASSWD: APACHE2
-%super          MENARINI = NOPASSWD: DEFAULTPERMS
-%super          ALL = NOPASSWD: DEPLOY, DEFAULTPERMS, MONITOR, ISPCONFIG_REWRITE_CONF, WSDL
+%super          ALL = NOPASSWD: DEPLOY, MONITOR, ISPCONFIG_REWRITE_CONF, WSDL
 %super          TITOLO = NOPASSWD: NEWSCAST_BIN
 %tomcat55       ALL = NOPASSWD: TOMCAT, MONITOR
 %tomcat6        ALL = NOPASSWD: TOMCAT6_INITSCRIPT, TOMCAT6_INITSCRIPT_10_04

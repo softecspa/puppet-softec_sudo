@@ -4,9 +4,9 @@ class softec_sudo inherits sudo {
     'Ubuntu': {
       case $::lsbdistcodename {
         'hardy': {
-          File['/etc/sudoers'] {
+          File[$sudo::config_file] {
             source  => undef,
-            content => template("softec_sudo/etc/sudoers_hardy.erb")
+            content => template("softec_private/etc/sudoers_hardy.erb")
           }
           file { '/etc/sudoers.d':
             ensure  => directory,
@@ -16,8 +16,8 @@ class softec_sudo inherits sudo {
           }
         }
         default : {
-          File['/etc/sudoers'] {
-            source  => 'puppet:///modules/softec_sudo/etc/sudoers_default'
+          File[$sudo::config_file] {
+            source  => 'puppet:///modules/softec_private/etc/sudoers_default'
           }
         }
       }

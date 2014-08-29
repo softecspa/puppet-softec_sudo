@@ -6,7 +6,7 @@ class softec_sudo inherits sudo {
         'hardy': {
           File[$sudo::config_file] {
             source  => undef,
-            content => template("softec_private/etc/sudoers_hardy.erb")
+            content => template('softec_private/etc/sudoers_hardy.erb')
           }
         }
         default : {
